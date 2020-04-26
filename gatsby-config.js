@@ -3,6 +3,14 @@ module.exports = {
     title: `Amazing Pandas Eating Things`,
   },
   plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `src`,
+        path: `${__dirname}/src/`,
+      },
+    },
+    `gatsby-transformer-remark`,
     `gatsby-plugin-emotion`,
     {
       resolve: `gatsby-plugin-typography`,
@@ -16,5 +24,5 @@ module.exports = {
         postCssPlugins: [require("autoprefixer")],
       }
     },
-  ],
+  ],  
 }

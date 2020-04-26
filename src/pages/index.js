@@ -1,37 +1,57 @@
 import React from "react";
-// import { Link } from "gatsby";
-// import Header from "../components/header";
+import { Link, graphql } from "gatsby";
+import { css } from "@emotion/core";
+import { rhythm } from "../utils/typography";
 import Layout from "../components/layout";
-import { graphql } from "gatsby";
 
 export default ({ data }) => (
-  /*   <div style={{ color: `purple` }}>
-    <Link to="/contact/">Contact</Link>
-    <Header headerText="Hello Gatsby!" />
-    <p>What a world.</p>
-    <img src="https://source.unsplash.com/random/400x200" alt="" />
-  </div>
- */
-  /*   <div style={{ margin: `3rem auto`, maxWidth: 600 }}>
-    <h1>Hi! I'm building a fake Gatsby site as part of a tutorial!</h1>
-    <p>
-      What do I like to do? Lots of course but definitely enjoy building
-      websites.
-    </p>
-  </div>
- */
   <Layout>
     <div>
-      <h1>{data.site.siteMetadata.title}</h1>
       <div>
+        <h1
+          css={css`
+            display: inline-block;
+            border-bottom: 1px solid;
+          `}
+        >
+          Amazing Pandas Eating Things
+        </h1>
         <img
           src="https://2.bp.blogspot.com/-BMP2l6Hwvp4/TiAxeGx4CTI/AAAAAAAAD_M/XlC_mY3SoEw/s1600/panda-group-eating-bamboo.jpg"
           alt="Group of pandas eating bamboo"
         />
+        <h4>{data.allMarkdownRemark.totalCount} Posts</h4>
+        {data.allMarkdownRemark.edges.map(({ node }) => (
+          <div key={node.id}>
+            <Link
+              to={node.fields.slug}
+              css={css`
+                text-decoration: none;
+                color: inherit;
+              `}
+            >
+              <h3
+                css={css`
+                  margin-bottom: ${rhythm(1 / 4)};
+                `}
+              >
+                {node.frontmatter.title}{" "}
+                <span
+                  css={css`
+                    color: #bbb;
+                  `}
+                >
+                  — {node.frontmatter.date}
+                </span>
+              </h3>
+              <p>{node.excerpt}</p>
+            </Link>
+          </div>
+        ))}
       </div>
       <div class="flex flex-wrap -mb-4">
-        <div class="w-1/3 mb-4 bg-gray-400 h-12"></div>
-        <div class="w-1/3 mb-4 bg-gray-500 h-12"></div>
+        <div class="w-1/2 mb-4 bg-gray-400 h-12"></div>
+        <div class="w-1/2 mb-4 bg-gray-500 h-12"></div>
         <div class="w-1/3 mb-4 bg-gray-400 h-12"></div>
         <div class="w-1/3 mb-4 bg-gray-500 h-12"></div>
         <div class="w-1/3 mb-4 bg-gray-400 h-12"></div>
@@ -42,9 +62,20 @@ export default ({ data }) => (
 
 export const query = graphql`
   query {
-    site {
-      siteMetadata {
-        title
+    allMarkdownRemark(sort: { fields: [frontmatter___date], order: DESC }) {
+      totalCount
+      edges {
+        node {
+          id
+          frontmatter {
+            title
+            date(formatString: "DD MMMM, YYYY")
+          }
+          fields {
+            slug
+          }
+          excerpt
+        }
       }
     }
   }
