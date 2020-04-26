@@ -1,0 +1,2 @@
+# lemagnifique
+Based on Gatsby
