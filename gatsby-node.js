@@ -1,8 +1,15 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 
-exports.onCreateNode = ({ node, getNode, actions }) => {
-  const { createNodeField } = actions
+exports.onCreateNode = async ({ 
+  node,
+  getNode,
+  actions: { createNode, createNodeField},
+  loadNodeContent,
+  createNodeId,
+  createContentDigest,
+}) => {
+  // const { createNodeField } = actions
   if (node.internal.type === `MarkdownRemark`) {
     const slug = createFilePath({ node, getNode, basePath: `pages` })
     createNodeField({
@@ -10,6 +17,34 @@ exports.onCreateNode = ({ node, getNode, actions }) => {
       name: `slug`,
       value: slug,
     })
+  }
+
+  if (node.name === 'sonates') {
+  // const { createNode } = actions
+  try {
+    const nodeContent = await loadNodeContent(node);
+    const todos = JSON.parse(nodeContent);
+    console.log(node);
+
+    todos.forEach(sonate => {
+      const childId = createNodeId(`${node.id}${sonate.id}`);
+      const sonateNode = {
+        sonateId: sonate.id,
+        sourceInstanceName: node.name,
+        id: childId,
+        children: [],
+        parent: node.id,
+        internal: {
+          type: 'Sonate',
+          contentDigest: createContentDigest(sonate),
+          description: 'A Sonate lalala...lala',
+        },
+      };
+      createNode(sonateNode);
+    });
+  } catch (error) {
+    console.error(error);
+  }
   }
 }
 

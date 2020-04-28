@@ -24,5 +24,12 @@ module.exports = {
         postCssPlugins: [require("autoprefixer")],
       }
     },
+    {
+      resolve: 'gatsby-source-remote-file',
+      options: {
+        url: 'https://my-json-server.typicode.com/casau/serve_json/sonates',
+        name: 'sonates',
+      },
+    },
   ],  
 }
